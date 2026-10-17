@@ -95,7 +95,7 @@ class WaitTrainerWindow(QMainWindow):
 
         self.txt_path = QLabel("No file selected")
         self.txt_path.setStyleSheet("color: #38bdf8; font-weight: bold; font-size: 13px;")
-        self.btn_select_csv = QPushButton("📁 Select CSV")
+        self.btn_select_csv = QPushButton("Select CSV")
         self.btn_select_csv.setStyleSheet("background-color: #334155; color: white; padding: 6px 14px; font-weight: bold;")
         self.btn_select_csv.clicked.connect(self.select_csv)
 
@@ -112,7 +112,7 @@ class WaitTrainerWindow(QMainWindow):
         layout.addWidget(grp_csv)
 
         # Action button
-        self.btn_train = QPushButton("▶ Start training  apply to config.py")
+        self.btn_train = QPushButton("Start training - apply to config.py")
         self.btn_train.setStyleSheet("background-color: #2563eb; color: white; font-size: 13px; font-weight: bold; padding: 10px; border-radius: 4px;")
         self.btn_train.clicked.connect(self.start_training)
         layout.addWidget(self.btn_train)

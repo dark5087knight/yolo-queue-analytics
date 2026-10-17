@@ -303,7 +303,7 @@ class MainWindow(QMainWindow):
         """)
         self.btn_clear_record.clicked.connect(self.clear_records)
 
-        self.btn_full_report = QPushButton("📊 Generate Full Report")
+        self.btn_full_report = QPushButton("Generate Full Report")
         self.btn_full_report.setStyleSheet("""
             QPushButton {
                 background-color: #8b5cf6;
@@ -432,21 +432,21 @@ class MainWindow(QMainWindow):
         # Bottom Control Toolbar
         toolbar_layout = QHBoxLayout()
 
-        self.btn_select_video = QPushButton("📁 Select Video")
+        self.btn_select_video = QPushButton("Select Video")
         self.btn_select_video.clicked.connect(self.select_video)
 
-        self.btn_camera = QPushButton("📷 Camera")
+        self.btn_camera = QPushButton("Camera")
         self.btn_camera.clicked.connect(self.select_camera)
 
-        self.btn_start = QPushButton("▶ Start")
+        self.btn_start = QPushButton("Start")
         self.btn_start.setStyleSheet("background-color: #16a34a;")
         self.btn_start.clicked.connect(self.start_processing)
 
-        self.btn_stop = QPushButton("■ Stop")
+        self.btn_stop = QPushButton("Stop")
         self.btn_stop.setStyleSheet("background-color: #dc2626;")
         self.btn_stop.clicked.connect(self.stop_processing)
 
-        self.btn_pause = QPushButton("⏸ Pause")
+        self.btn_pause = QPushButton("Pause")
         self.btn_pause.setStyleSheet("background-color: #0284c7;")
         self.btn_pause.clicked.connect(self.pause_processing)
 
@@ -455,17 +455,17 @@ class MainWindow(QMainWindow):
         sep.setFrameShape(QFrame.VLine)
         sep.setStyleSheet("color: #475569;")
 
-        self.btn_zone_drag = QPushButton("✏ Zone (Drag)")
+        self.btn_zone_drag = QPushButton("Zone (Drag)")
         self.btn_zone_drag.clicked.connect(self.enable_zone_drag)
 
-        self.btn_zone_4pts = QPushButton("✏ Zone (4 Pts)")
+        self.btn_zone_4pts = QPushButton("Zone (4 Pts)")
         self.btn_zone_4pts.clicked.connect(self.enable_zone_4pts)
 
-        self.btn_undo_zone = QPushButton("↶ Undo Zone")
+        self.btn_undo_zone = QPushButton("Undo Zone")
         self.btn_undo_zone.setStyleSheet("background-color: #475569;")
         self.btn_undo_zone.clicked.connect(self.undo_zone)
 
-        self.btn_clear_zones = QPushButton("🗑 Clear Zones")
+        self.btn_clear_zones = QPushButton("Clear Zones")
         self.btn_clear_zones.setStyleSheet("background-color: #475569;")
         self.btn_clear_zones.clicked.connect(self.clear_zones)
 
@@ -502,7 +502,7 @@ class MainWindow(QMainWindow):
         # GPU Status Badge
         if getattr(config, "USE_CUDA", False):
             gpu_display = config.GPU_NAME.replace("NVIDIA GeForce ", "")
-            self.lbl_gpu_badge = QLabel(f"⚡ GPU: {gpu_display}")
+            self.lbl_gpu_badge = QLabel(f"GPU: {gpu_display}")
             self.lbl_gpu_badge.setStyleSheet(
                 "background-color: #1e1b4b; color: #a78bfa; border: 1px solid #6366f1; "
                 "padding: 2px 8px; border-radius: 3px; font-weight: bold; font-size: 11px; margin-right: 8px;"
@@ -543,7 +543,7 @@ class MainWindow(QMainWindow):
         if path:
             self.current_source = path
             fname = os.path.basename(path)
-            self.btn_select_video.setText(f"📁 {fname}")
+            self.btn_select_video.setText(fname)
             
             # Load and display the first frame
             cap = cv2.VideoCapture(path)
@@ -559,7 +559,7 @@ class MainWindow(QMainWindow):
 
     def select_camera(self):
         self.current_source = "0"
-        self.btn_select_video.setText("📁 Select Video")
+        self.btn_select_video.setText("Select Video")
         self.preview_frame = None
         self.video_view.setText("Live Camera Source (Index 0) selected.\nPress Start to begin.")
         self.status_bar.showMessage("Selected Camera 0", 4000)

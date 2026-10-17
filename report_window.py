@@ -96,14 +96,14 @@ class ReportWindow(QDialog):
 
         # Header toolbar with buttons
         btn_layout = QHBoxLayout()
-        self.btn_refresh = QPushButton("🔄 Refresh Report")
+        self.btn_refresh = QPushButton("Refresh Report")
         self.btn_refresh.clicked.connect(self.refresh_data)
 
-        self.btn_export_csv = QPushButton("📥 Export CSV")
+        self.btn_export_csv = QPushButton("Export CSV")
         self.btn_export_csv.setStyleSheet("background-color: #059669; font-weight: bold;")
         self.btn_export_csv.clicked.connect(self.export_csv)
 
-        self.btn_export_pdf = QPushButton("📄 Export PDF")
+        self.btn_export_pdf = QPushButton("Export PDF")
         self.btn_export_pdf.setStyleSheet("background-color: #dc2626; font-weight: bold;")
         self.btn_export_pdf.clicked.connect(self.export_pdf)
 
@@ -159,7 +159,7 @@ class ReportWindow(QDialog):
         self.tbl_zones.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         summary_layout.addWidget(self.tbl_zones)
 
-        self.tabs.addTab(self.tab_summary, "📊 Summary")
+        self.tabs.addTab(self.tab_summary, "Summary")
 
         # Tab 2: Customer Details
         self.tab_details = QWidget()
@@ -173,7 +173,7 @@ class ReportWindow(QDialog):
         self.tbl_customers.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         details_layout.addWidget(self.tbl_customers)
 
-        self.tabs.addTab(self.tab_details, "📋 Customer Detail")
+        self.tabs.addTab(self.tab_details, "Customer Detail")
         main_layout.addWidget(self.tabs)
 
     def refresh_data(self):

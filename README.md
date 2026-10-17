@@ -4,7 +4,7 @@ Desktop queue management and monitoring application developed using **Python**, 
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 project/
@@ -29,7 +29,7 @@ project/
 
 ---
 
-## 🚀 Quick Start Guide
+## Quick Start Guide
 
 ### 1. Launch the Main Application
 ```bash
