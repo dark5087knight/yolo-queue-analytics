@@ -60,7 +60,6 @@ python training/train_model.py --epochs 30 --batch 16 --device 0
 
 ### 3. Launch the Wait-Time Trainer (Config Calibration)
 To calibrate the system's operational parameters based on logged history:
-
 ```bash
 cd project
 python wait_trainer.py
