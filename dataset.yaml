@@ -1,0 +1,10 @@
+# YOLOv8 Dataset Configuration for Human Detection
+# Roboflow Universe: human-v2 / human-dataset-v2 (v6)
+
+path: C:/Users/Dark Knight/Desktop/AI/YOLO-queue-detection/Human Dataset v2.v6-experiment-subject-4.yolov8
+train: train/images
+val: valid/images
+test: test/images
+
+nc: 2
+names: ['Human ', 'Human']

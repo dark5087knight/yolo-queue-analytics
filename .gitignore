@@ -1,0 +1,65 @@
+# ====================================================================
+# Git Ignore for YOLOv8 Queue Detection & Tracking System
+# ====================================================================
+
+# Python Bytecode and Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+
+# PyTorch, Ultralytics YOLO training runs and logs
+runs/
+*.ipc
+
+# Model weight checkpoints (Large binaries)
+*.pt
+*.pth
+*.onnx
+*.engine
+*.tflite
+# Optionally track models folder structure
+!models/.gitkeep
+!weights/.gitkeep
+
+# Video Files & Datasets (Prevent pushing heavy surveillance video recordings)
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+*.flv
+*.wmv
+
+# Generated Output Reports (Keep sample templates)
+reports/*.pdf
+reports/*.xlsx
+!reports/sample_queue_data.csv
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# Operating System Files
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
+.DS_Store
+
+# Temporary files & Logs
+*.log
+scratch/
+.tempmediaStorage/
