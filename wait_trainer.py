@@ -111,11 +111,19 @@ class WaitTrainerWindow(QMainWindow):
         csv_vbox.addWidget(lbl_rule)
         layout.addWidget(grp_csv)
 
-        # Action button
-        self.btn_train = QPushButton("Start training - apply to config.py")
-        self.btn_train.setStyleSheet("background-color: #2563eb; color: white; font-size: 13px; font-weight: bold; padding: 10px; border-radius: 4px;")
+        # Action buttons
+        btn_action_layout = QHBoxLayout()
+        self.btn_train = QPushButton("Basic Calibration -> config.py")
+        self.btn_train.setStyleSheet("background-color: #334155; color: white; font-size: 12px; font-weight: bold; padding: 10px; border-radius: 4px;")
         self.btn_train.clicked.connect(self.start_training)
-        layout.addWidget(self.btn_train)
+
+        self.btn_train_lgb = QPushButton("Train LightGBM Load & Wait Model")
+        self.btn_train_lgb.setStyleSheet("background-color: #059669; color: white; font-size: 12px; font-weight: bold; padding: 10px; border-radius: 4px;")
+        self.btn_train_lgb.clicked.connect(self.start_lightgbm_training)
+
+        btn_action_layout.addWidget(self.btn_train)
+        btn_action_layout.addWidget(self.btn_train_lgb)
+        layout.addLayout(btn_action_layout)
 
         # Results Group
         grp_results = QGroupBox("Results")
@@ -221,6 +229,66 @@ class WaitTrainerWindow(QMainWindow):
 
         except Exception as e:
             QMessageBox.critical(self, "Training Error", f"Failed to train from CSV: {str(e)}")
+
+    def start_lightgbm_training(self):
+        if not self.csv_path or not os.path.exists(self.csv_path):
+            QMessageBox.warning(self, "Missing File", "Please select a valid CSV file first.")
+            return
+
+        try:
+            from load_predictor import QueueDataProcessor, LightGBMQueueTrainer, generate_synthetic_historical_data
+            processor = QueueDataProcessor(self.csv_path)
+            df_raw = processor.load_and_clean()
+
+            # If small dataset, augment
+            if len(df_raw) < 50:
+                synth_path = os.path.join(config.REPORTS_DIR, "historical_queue_dataset.csv")
+                generate_synthetic_historical_data(synth_path, days=28)
+                processor = QueueDataProcessor(synth_path)
+                df_raw = processor.load_and_clean()
+
+            df_hourly, df_indiv = processor.build_feature_datasets()
+            trainer = LightGBMQueueTrainer(config.MODELS_DIR)
+            results = trainer.train_models(df_hourly, df_indiv)
+            trainer.update_config(results["calib_avg_wait"], results["peak_hour"])
+
+            meta = results["meta"]
+            self.lbl_summary.setText(
+                f"<b>LightGBM Training Complete!</b><br>"
+                f"• Processed <b>{len(df_raw)}</b> customer logs<br>"
+                f"• Load Model (Traffic): R²=<b>{meta['load_metrics']['r2']}</b>, MAE=<b>{meta['load_metrics']['mae']}</b> cust/hr<br>"
+                f"• Wait Time Model: R²=<b>{meta['wait_metrics']['r2']}</b>, MAE=<b>{meta['wait_metrics']['mae']}s</b><br>"
+                f"• Calibrated Average Wait: <b>{results['calib_avg_wait']}s</b> | Peak Hour: <b>{results['peak_hour']}:00</b>"
+            )
+
+            hourly_counts = df_raw.groupby("hour").size()
+            peak_hour = results["peak_hour"]
+            self.tbl_hourly.setRowCount(24)
+            total = max(1, len(df_raw))
+            for h in range(24):
+                cnt = int(hourly_counts.get(h, 0))
+                pct = (cnt / total) * 100
+                item_h = QTableWidgetItem(f"{h:02d}:00")
+                item_c = QTableWidgetItem(str(cnt))
+                item_p = QTableWidgetItem(f"{pct:.1f}%")
+                if h == peak_hour:
+                    item_h.setBackground(Qt.darkGreen)
+                    item_c.setBackground(Qt.darkGreen)
+                    item_p.setBackground(Qt.darkGreen)
+                self.tbl_hourly.setItem(h, 0, item_h)
+                self.tbl_hourly.setItem(h, 1, item_c)
+                self.tbl_hourly.setItem(h, 2, item_p)
+
+            QMessageBox.information(
+                self, "LightGBM Success",
+                f"LightGBM models successfully trained and saved to models/!\n\n"
+                f"Queue Load Test R²: {meta['load_metrics']['r2']}\n"
+                f"Wait Duration Test R²: {meta['wait_metrics']['r2']}\n"
+                f"Peak Hour: {peak_hour}:00\n"
+                f"Average Wait: {results['calib_avg_wait']}s"
+            )
+        except Exception as e:
+            QMessageBox.critical(self, "LightGBM Error", f"Failed to train LightGBM model: {str(e)}")
 
     def update_config_file(self, avg_wait: float, peak_hour: int):
         """Rewrites config.py with the newly calibrated parameters."""

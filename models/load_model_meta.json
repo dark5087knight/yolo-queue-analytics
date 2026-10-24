@@ -1,0 +1,33 @@
+{
+    "trained_at": "2026-10-25T01:04:55.505753",
+    "records_trained": 6018,
+    "hourly_samples": 665,
+    "load_metrics": {
+        "mae": 1.509,
+        "rmse": 1.915,
+        "r2": 0.886
+    },
+    "wait_metrics": {
+        "mae": 2.74,
+        "rmse": 3.89,
+        "r2": 0.582
+    },
+    "top_features_load": {
+        "hour": 923.0,
+        "day_num": 393.0,
+        "sin_day": 302.0,
+        "cos_hour": 277.0,
+        "zone": 272.0
+    },
+    "top_features_wait": {
+        "customer_load": 1491.0,
+        "hour": 858.0,
+        "sin_day": 637.0,
+        "day_num": 603.0,
+        "cos_hour": 597.0
+    },
+    "calibrated_peak_hour": 13,
+    "calibrated_avg_wait_sec": 24.1,
+    "load_model_path": "D:\\AI\\YOLO-queue-detection\\project\\models\\lightgbm_load_model.txt",
+    "wait_model_path": "D:\\AI\\YOLO-queue-detection\\project\\models\\lightgbm_wait_model.txt"
+}

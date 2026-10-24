@@ -53,6 +53,32 @@ class QueueManager:
         self.current_in_queue = 0
         self.current_entering = 0
         self.current_status = "Normal"
+        self.load_predictor = None
+        self._predictor_initialized = False
+
+    def get_effective_service_time(self, current_time: datetime, zone_id: int = 1, current_load: int = 1) -> float:
+        """Returns dynamic LightGBM estimated wait time or fallback config average."""
+        if getattr(config, "USE_LIGHTGBM_PREDICTOR", False):
+            if not self._predictor_initialized:
+                try:
+                    from load_predictor import QueueLoadPredictor
+                    predictor = QueueLoadPredictor()
+                    if predictor.is_ready():
+                        self.load_predictor = predictor
+                except Exception:
+                    self.load_predictor = None
+                self._predictor_initialized = True
+
+            if self.load_predictor is not None:
+                try:
+                    day_name = current_time.strftime("%A")
+                    hour = current_time.hour
+                    res = self.load_predictor.predict(day=day_name, hour=hour, zone=zone_id, known_load=current_load)
+                    return float(res["predicted_wait_seconds"])
+                except Exception:
+                    pass
+
+        return float(getattr(config, "AVERAGE_WAIT_TIME_SECONDS", 14.12))
 
     def add_zone(self, points: List[Tuple[int, int]]) -> int:
         """Adds a new zone and returns its zone_id."""
@@ -221,12 +247,16 @@ class QueueManager:
             waited_sec = (current_time - data["entry_time"]).total_seconds()
             waited_str = format_duration(waited_sec)
             
-            # Estimated remaining wait: position in line * avg service time
-            # Position 0 (at counter/front) has ~avg_time / 2, position 1 has 1 * avg_time, etc.
+            # Estimated remaining wait: position in line * dynamic service time
+            service_time = self.get_effective_service_time(
+                current_time=current_time,
+                zone_id=data["zone_id"],
+                current_load=len(confirmed_people),
+            )
             if pos == 0:
-                est_wait_sec = max(1.0, round(config.AVERAGE_WAIT_TIME_SECONDS / 2.0))
+                est_wait_sec = max(1.0, round(service_time / 2.0))
             else:
-                est_wait_sec = max(1.0, round(pos * config.AVERAGE_WAIT_TIME_SECONDS))
+                est_wait_sec = max(1.0, round(pos * service_time))
             est_wait_str = format_duration(est_wait_sec)
 
             queue_table_rows.append({

@@ -46,11 +46,18 @@ BUSY_QUEUE_THRESHOLD = 3          # Queue length >= BUSY_QUEUE_THRESHOLD trigger
 SMOOTHING_WINDOW = 4              # Number of frames for count smoothing
 
 # Calibrated Operational Metrics (Updated by Wait Trainer)
-AVERAGE_WAIT_TIME_SECONDS = 14.12 # Default estimated service time per customer in seconds
-PEAK_HOUR = 8                     # Default peak operational hour (0-23)
+AVERAGE_WAIT_TIME_SECONDS = 24.1 # Default estimated service time per customer in seconds
+PEAK_HOUR = 13                     # Default peak operational hour (0-23)
+
+# LightGBM Load & Wait Time Models
+LIGHTGBM_LOAD_MODEL = os.path.join(MODELS_DIR, "lightgbm_load_model.txt")
+LIGHTGBM_WAIT_MODEL = os.path.join(MODELS_DIR, "lightgbm_wait_model.txt")
+LIGHTGBM_META = os.path.join(MODELS_DIR, "load_model_meta.json")
+USE_LIGHTGBM_PREDICTOR = True
 
 # Video Processing & Playback
 TARGET_FPS = 30                   # Target frame processing rate
 REALTIME_PLAYBACK = True          # True = sync video playback to recorded FPS; False = maximum unthrottled GPU speed
 MIN_FRAMES_IN_ZONE = 5            # Minimum consecutive frames before a person is confirmed in queue (avoids transients)
 MIN_FRAMES_BEFORE_EXIT = 8         # Grace period to avoid flickering when person temporarily blocked
+
